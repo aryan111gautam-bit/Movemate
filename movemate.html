@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoveMate — Storage from the student down the street</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FAF6EE;
+    --cream-2:#F1EADA;
+    --ink:#2A2622;
+    --ink-soft:#6B6359;
+    --tape:#D9542E;
+    --tape-dark:#A8401F;
+    --sage:#7A9B4E;
+    --sage-dark:#54702F;
+    --line: rgba(42,38,34,0.12);
+    --paper-shadow: 0 1px 0 rgba(42,38,34,0.06);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:'Lilita One',sans-serif; font-weight:400; letter-spacing:0.5px;}
+  .mono{font-family:'Space Mono',monospace;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--cream);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:18px 24px;}
+  .logo{display:flex; align-items:center; gap:10px; font-size:24px;}
+  .logo-mark{
+    width:34px; height:34px; background:var(--tape); border-radius:8px;
+    display:flex; align-items:center; justify-content:center; color:#fff;
+    transform:rotate(-6deg);
+    font-family:'Lilita One',sans-serif; font-size:18px;
+  }
+  .nav-cta{
+    background:var(--ink); color:var(--cream); border:none;
+    padding:10px 20px; border-radius:999px; font-weight:600; font-size:14px;
+    cursor:pointer; font-family:'Inter',sans-serif;
+    transition:transform .15s ease;
+  }
+  .nav-cta:hover{transform:translateY(-1px);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:64px 0 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1.1fr 1fr; gap:48px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--cream-2); border:1px solid var(--line);
+    border-radius:999px; padding:6px 14px; font-size:13px; font-weight:600;
+    color:var(--sage-dark); margin-bottom:20px;
+  }
+  .eyebrow .dot{width:8px; height:8px; border-radius:50%; background:var(--sage);}
+  h1{
+    font-size:clamp(40px, 6vw, 64px);
+    line-height:1.05;
+    margin-bottom:20px;
+  }
+  h1 .accent{color:var(--tape);}
+  .hero p.lead{
+    font-size:19px; color:var(--ink-soft); max-width:480px; margin-bottom:28px;
+  }
+  .hero-actions{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:14px;}
+  .btn-primary{
+    background:var(--tape); color:#fff; border:none;
+    padding:15px 28px; border-radius:999px; font-weight:700; font-size:16px;
+    cursor:pointer; box-shadow:var(--paper-shadow);
+    transition:transform .15s ease, background .15s ease;
+    font-family:'Inter',sans-serif;
+  }
+  .btn-primary:hover{transform:translateY(-2px); background:var(--tape-dark);}
+  .btn-secondary{
+    background:transparent; color:var(--ink); border:2px solid var(--ink);
+    padding:13px 26px; border-radius:999px; font-weight:700; font-size:16px;
+    cursor:pointer; font-family:'Inter',sans-serif;
+    transition:background .15s ease;
+  }
+  .btn-secondary:hover{background:var(--cream-2);}
+  .hero-note{font-size:13px; color:var(--ink-soft);}
+
+  /* ---------- HERO VISUAL: matching cards ---------- */
+  .match-stage{
+    position:relative; height:420px;
+  }
+  .match-card{
+    position:absolute; width:230px; background:#fff; border-radius:18px;
+    border:1px solid var(--line); padding:18px;
+    box-shadow:0 8px 24px -8px rgba(42,38,34,0.18);
+  }
+  .match-card.you{ top:10px; left:0; transform:rotate(-3deg); z-index:2;}
+  .match-card.host{ top:130px; right:0; transform:rotate(2deg); z-index:1;}
+  .pin-tape{
+    position:absolute; top:-10px; left:24px; width:60px; height:20px;
+    background:rgba(217,84,46,0.85); transform:rotate(-4deg);
+    border-radius:2px;
+  }
+  .match-card.host .pin-tape{background:rgba(122,155,78,0.85); left:auto; right:24px; transform:rotate(4deg);}
+  .card-photo{
+    width:100%; height:90px; border-radius:10px; margin-bottom:12px;
+    background:var(--cream-2);
+    display:flex; align-items:center; justify-content:center; font-size:30px;
+  }
+  .card-title{font-weight:700; font-size:15px; margin-bottom:4px;}
+  .card-sub{font-size:13px; color:var(--ink-soft); margin-bottom:10px;}
+  .card-tag{
+    display:inline-block; font-size:11px; font-weight:700; letter-spacing:0.5px;
+    padding:4px 10px; border-radius:999px; text-transform:uppercase;
+  }
+  .tag-need{background:#FBE6DD; color:var(--tape-dark);}
+  .tag-have{background:#E6EFD9; color:var(--sage-dark);}
+
+  .distance-badge{
+    position:absolute; top:260px; left:50%; transform:translate(-50%,0);
+    background:var(--ink); color:var(--cream); border-radius:999px;
+    padding:10px 20px; font-size:14px; font-weight:700;
+    display:flex; align-items:center; gap:8px; z-index:3;
+    box-shadow:0 6px 16px -6px rgba(42,38,34,0.4);
+  }
+  .distance-line{
+    position:absolute; top:200px; left:50%; width:1px; height:120px;
+    border-left:2px dashed var(--line); transform:translateX(-50%);
+  }
+  .price-tag{
+    position:absolute; bottom:30px; left:30px;
+    background:var(--cream); border:2px dashed var(--tape);
+    border-radius:12px; padding:12px 18px; transform:rotate(-4deg);
+    z-index:3;
+  }
+  .price-tag .amt{font-size:28px; font-weight:700; color:var(--tape-dark); font-family:'Lilita One',sans-serif;}
+  .price-tag .per{font-size:12px; color:var(--ink-soft);}
+
+  /* ---------- SECTION HEADINGS ---------- */
+  section{padding:64px 0;}
+  .section-head{max-width:560px; margin-bottom:40px;}
+  .section-head .label{
+    font-size:13px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+    color:var(--tape); margin-bottom:10px; font-family:'Space Mono',monospace;
+  }
+  h2{font-size:clamp(28px,4vw,40px); margin-bottom:12px;}
+  .section-head p{color:var(--ink-soft); font-size:17px;}
+
+  /* ---------- PROBLEM STATS ---------- */
+  .stats-section{background:var(--cream-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .stats-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .stat-card{
+    background:#fff; border-radius:16px; border:1px solid var(--line);
+    padding:28px 24px;
+  }
+  .stat-num{font-family:'Lilita One',sans-serif; font-size:48px; color:var(--tape); line-height:1;}
+  .stat-label{font-size:15px; font-weight:600; margin-top:8px;}
+  .stat-desc{font-size:14px; color:var(--ink-soft); margin-top:6px;}
+
+  /* ---------- HOW IT WORKS ---------- */
+  .how-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:28px;}
+  .how-card{
+    border:1px solid var(--line); border-radius:18px; padding:28px;
+    background:#fff;
+    position:relative;
+  }
+  .how-num{
+    font-family:'Lilita One',sans-serif; font-size:20px;
+    width:38px; height:38px; border-radius:50%;
+    background:var(--cream-2); display:flex; align-items:center; justify-content:center;
+    margin-bottom:18px; color:var(--tape-dark);
+  }
+  .how-card h3{font-size:19px; margin-bottom:8px;}
+  .how-card p{font-size:14.5px; color:var(--ink-soft);}
+
+  /* ---------- APP PREVIEW ---------- */
+  .preview-section{background:var(--ink); color:var(--cream); border-radius:28px; margin:0 24px; padding:64px 0;}
+  .preview-section .wrap{max-width:1080px;}
+  .preview-section .section-head .label{color:var(--sage);}
+  .preview-section h2{color:var(--cream);}
+  .preview-section .section-head p{color:#C9C2B6;}
+  .phones{display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:8px;}
+  .phone{
+    background:#fff; color:var(--ink); border-radius:22px; padding:18px;
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .phone-head{font-size:12px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; font-family:'Space Mono',monospace;}
+  .phone-screen{display:flex; flex-direction:column; gap:10px;}
+  .phone-listing{
+    display:flex; gap:10px; align-items:center; border:1px solid var(--line);
+    border-radius:12px; padding:10px;
+  }
+  .phone-listing .thumb{width:42px; height:42px; border-radius:8px; background:var(--cream-2); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;}
+  .phone-listing .meta{flex:1;}
+  .phone-listing .meta .t{font-size:13px; font-weight:700;}
+  .phone-listing .meta .s{font-size:11.5px; color:var(--ink-soft);}
+  .phone-listing .px{font-size:13px; font-weight:700; color:var(--sage-dark);}
+  .map-mock{
+    height:140px; background:var(--cream-2); border-radius:12px; position:relative; overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .map-mock .pin{
+    position:absolute; width:14px; height:14px; border-radius:50%;
+    border:3px solid #fff; box-shadow:0 0 0 1px var(--line);
+  }
+  .map-mock .pin.me{background:var(--tape); top:62px; left:130px;}
+  .map-mock .pin.a{background:var(--sage); top:30px; left:90px;}
+  .map-mock .pin.b{background:var(--sage); top:90px; left:170px;}
+  .map-mock .pin.c{background:var(--sage); top:46px; left:200px;}
+  .map-mock .radius{
+    position:absolute; width:120px; height:120px; border:2px dashed var(--ink-soft);
+    border-radius:50%; top:14px; left:80px; opacity:0.4;
+  }
+  .chat-bubble{
+    border-radius:12px; padding:10px 12px; font-size:13px; max-width:80%;
+  }
+  .chat-bubble.them{background:var(--cream-2); align-self:flex-start;}
+  .chat-bubble.me{background:var(--sage); color:#fff; align-self:flex-end;}
+  .chat-time{font-size:11px; color:var(--ink-soft); margin:2px 0;}
+
+  /* ---------- TESTIMONIAL / TRUST ---------- */
+  .trust-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:24px;}
+  .trust-card{border:1px solid var(--line); border-radius:18px; padding:28px; background:#fff;}
+  .trust-card h3{font-size:18px; margin-bottom:8px; display:flex; align-items:center; gap:10px;}
+  .trust-icon{
+    width:32px; height:32px; border-radius:8px; background:var(--cream-2);
+    display:flex; align-items:center; justify-content:center; font-size:16px;
+  }
+  .trust-card p{font-size:14.5px; color:var(--ink-soft);}
+
+  /* ---------- SIGNUP / FORM ---------- */
+  .signup-section{text-align:center;}
+  .signup-card{
+    max-width:520px; margin:0 auto; background:#fff; border:1px solid var(--line);
+    border-radius:20px; padding:40px 32px; position:relative;
+  }
+  .signup-card .pin-tape-top{
+    position:absolute; top:-12px; left:50%; transform:translateX(-50%) rotate(-2deg);
+    width:80px; height:24px; background:var(--tape); border-radius:2px; opacity:0.9;
+  }
+  .signup-card h2{font-size:28px; margin-bottom:8px;}
+  .signup-card p{color:var(--ink-soft); font-size:15px; margin-bottom:24px;}
+  .role-toggle{
+    display:flex; gap:8px; background:var(--cream-2); border-radius:999px; padding:4px; margin-bottom:20px;
+  }
+  .role-btn{
+    flex:1; border:none; background:transparent; padding:10px 16px; border-radius:999px;
+    font-weight:700; font-size:14px; cursor:pointer; font-family:'Inter',sans-serif;
+    color:var(--ink-soft); transition:all .15s ease;
+  }
+  .role-btn.active{background:#fff; color:var(--ink); box-shadow:0 2px 8px -4px rgba(0,0,0,0.15);}
+  .signup-form{display:flex; flex-direction:column; gap:12px;}
+  .signup-form input{
+    width:100%; padding:14px 16px; border-radius:12px; border:1px solid var(--line);
+    font-size:15px; font-family:'Inter',sans-serif; background:var(--cream);
+  }
+  .signup-form input:focus{outline:2px solid var(--tape); outline-offset:1px;}
+  .signup-form button{
+    background:var(--tape); color:#fff; border:none; padding:15px; border-radius:12px;
+    font-weight:700; font-size:16px; cursor:pointer; font-family:'Inter',sans-serif;
+    transition:background .15s ease;
+  }
+  .signup-form button:hover{background:var(--tape-dark);}
+  .form-note{font-size:12.5px; color:var(--ink-soft); margin-top:14px;}
+  .form-success{display:none; text-align:center; padding:20px 0;}
+  .form-success.show{display:block;}
+  .form-success .check{
+    width:56px; height:56px; border-radius:50%; background:var(--cream-2);
+    display:flex; align-items:center; justify-content:center; font-size:28px;
+    margin:0 auto 16px; color:var(--sage-dark);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line); padding:32px 0; margin-top:40px;}
+  .footer-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+  footer .logo{font-size:18px;}
+  footer .foot-note{font-size:13px; color:var(--ink-soft);}
+
+  @media (max-width:840px){
+    .hero-grid{grid-template-columns:1fr;}
+    .match-stage{height:340px;}
+    .match-card{width:200px;}
+    .match-card.you{left:0;}
+    .match-card.host{right:0;}
+    .stats-grid, .how-grid, .phones, .trust-grid{grid-template-columns:1fr;}
+    .preview-section{margin:0 16px; border-radius:20px; padding:48px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">
+      <div class="logo-mark">M</div>
+      <span class="display">MoveMate</span>
+    </div>
+    <button class="nav-cta" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Join the waitlist</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> Starting in Isla Vista, summer 2026</div>
+      <h1 class="display">Storage from the <span class="accent">student</span> down the street.</h1>
+      <p class="lead">Skip the $200+ storage company and the U-Haul. MoveMate connects you with someone already staying in IV who has spare space — close enough to drop your stuff off in an Uber.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="document.getElementById('signup').scrollIntoView({behavior:'smooth'})">Find storage near me</button>
+        <button class="btn-secondary" onclick="setRole('host'); document.getElementById('signup').scrollIntoView({behavior:'smooth'})">List my space</button>
+      </div>
+      <p class="hero-note">Free to join · No app download needed yet · IV / UCSB only for now</p>
+    </div>
+    <div class="match-stage">
+      <div class="match-card you">
+        <div class="pin-tape"></div>
+        <div class="card-photo">🧳</div>
+        <div class="card-title">Jordan, leaving for summer</div>
+        <div class="card-sub">3 boxes + a mini fridge · 0.4 mi from your place</div>
+        <span class="card-tag tag-need">Needs space</span>
+      </div>
+      <div class="distance-line"></div>
+      <div class="distance-badge">0.4 mi away</div>
+      <div class="match-card host">
+        <div class="pin-tape"></div>
+        <div class="card-photo">🏠</div>
+        <div class="card-title">Sam, staying all summer</div>
+        <div class="card-sub">Empty closet + garage corner</div>
+        <span class="card-tag tag-have">Has space</span>
+      </div>
+      <div class="price-tag">
+        <div class="amt">$60</div>
+        <div class="per">for the summer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="label">The problem</div>
+      <h2>Move-out week shouldn't cost a month's rent.</h2>
+      <p>Every June, thousands of students face the same scramble — and the usual options weren't built for IV.</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">$150–300</div>
+        <div class="stat-label">Average summer storage cost</div>
+        <div class="stat-desc">What services like Storage Scholars charge for a few months in a shared unit.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">31%</div>
+        <div class="stat-label">Say finding space is the hardest part</div>
+        <div class="stat-desc">More students struggle to find somewhere to put their stuff than to afford it.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">0 mi</div>
+        <div class="stat-label">Average distance with MoveMate</div>
+        <div class="stat-desc">No truck, no long drive — just a short walk or quick rideshare to a neighbor's place.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="label">How it works</div>
+      <h2>Three steps. No truck required.</h2>
+      <p>Built around how students actually move out — fast, local, and on a budget.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">1</div>
+        <h3>Post what you need</h3>
+        <p>Tell MoveMate how much stuff you have and when you need it stored. We'll show you students nearby with space to spare.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">2</div>
+        <h3>Match with someone close</h3>
+        <p>We only recommend hosts within walking or short Uber distance — because the whole point is skipping the long haul.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">3</div>
+        <h3>Drop off, pay, done</h3>
+        <p>Agree on a price, drop your stuff off, and pick it up in the fall. Both sides are covered by a simple protection policy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="label">A look at the app</div>
+      <h2>This is the early concept — built for IV specifically.</h2>
+      <p>We're sharing this to get feedback before we build it for real. Tell us what's missing.</p>
+    </div>
+    <div class="phones">
+      <div class="phone">
+        <div class="phone-head">Browse nearby</div>
+        <div class="phone-screen">
+          <div class="map-mock">
+            <div class="radius"></div>
+            <div class="pin me"></div>
+            <div class="pin a"></div>
+            <div class="pin b"></div>
+            <div class="pin c"></div>
+          </div>
+          <div class="phone-listing">
+            <div class="thumb">🚪</div>
+            <div class="meta"><div class="t">Closet space — Sueño</div><div class="s">0.2 mi · all summer</div></div>
+            <div class="px">$50</div>
+          </div>
+          <div class="phone-listing">
+            <div class="thumb">📦</div>
+            <div class="meta"><div class="t">Garage corner — DP</div><div class="s">0.6 mi · 3 months</div></div>
+            <div class="px">$75</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone">
+        <div class="phone-head">List your space</div>
+        <div class="phone-screen">
+          <div class="phone-listing">
+            <div class="thumb">📐</div>
+            <div class="meta"><div class="t">Size</div><div class="s">Closet, corner, garage, or room</div></div>
+          </div>
+          <div class="phone-listing">
+            <div class="thumb">📅</div>
+            <div class="meta"><div class="t">Available dates</div><div class="s">Jun 14 – Sep 20</div></div>
+          </div>
+          <div class="phone-listing">
+            <div class="thumb">💵</div>
+            <div class="meta"><div class="t">Suggested price</div><div class="s">Based on size &amp; demand nearby</div></div>
+            <div class="px">$60</div>
+          </div>
+          <div class="phone-listing">
+            <div class="thumb">🛡️</div>
+            <div class="meta"><div class="t">Protection policy</div><div class="s">Included automatically</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone">
+        <div class="phone-head">Coordinate drop-off</div>
+        <div class="phone-screen">
+          <div class="chat-time" style="text-align:center;">Today</div>
+          <div class="chat-bubble them">Hey! I'm heading out around 2pm if that works for drop off</div>
+          <div class="chat-bubble me">Perfect, I'll be home — just buzz #204</div>
+          <div class="chat-bubble them">Sounds good, see you then 👍</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="label">Why it's different</div>
+      <h2>Built around two things students actually have.</h2>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card">
+        <h3><span class="trust-icon">📍</span> Proximity</h3>
+        <p>Every match is close enough to reach without a car — so the person leaving can drop off their stuff with an Uber, and pick it back up the same way in the fall.</p>
+      </div>
+      <div class="trust-card">
+        <h3><span class="trust-icon">🪙</span> Unused space</h3>
+        <p>If you're subletting or staying in IV for summer, you've probably got a closet, garage corner, or storage unit sitting empty. MoveMate turns that into beer money.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="signup-section" id="signup">
+  <div class="wrap">
+    <div class="signup-card">
+      <div class="pin-tape-top"></div>
+      <div id="form-step">
+        <h2 class="display">Get early access</h2>
+        <p>We're testing this with UCSB &amp; IV students this summer. Sign up to be matched first.</p>
+        <div class="role-toggle">
+          <button class="role-btn active" id="role-need" onclick="setRole('need')">I need storage</button>
+          <button class="role-btn" id="role-host" onclick="setRole('host')">I have space</button>
+        </div>
+        <form class="signup-form" onsubmit="submitForm(event)">
+          <input type="text" placeholder="Your name" required>
+          <input type="email" placeholder="UCSB or personal email" required>
+          <input type="text" placeholder="Where in IV? (e.g. Sueño, DP, Sabado)" required>
+          <button type="submit">Notify me</button>
+        </form>
+        <p class="form-note">No spam, no payment info needed yet — just a heads up when we launch in your area.</p>
+      </div>
+      <div class="form-success" id="form-success">
+        <div class="check">✓</div>
+        <h2 class="display">You're on the list!</h2>
+        <p>We'll reach out as soon as MoveMate is ready in your part of IV. Thanks for helping shape it early.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <div class="logo"><div class="logo-mark" style="width:28px;height:28px;font-size:15px;">M</div><span class="display">MoveMate</span></div>
+    <div class="foot-note">Built by students, for students. Isla Vista, CA.</div>
+  </div>
+</footer>
+
+<script>
+  function setRole(role){
+    document.getElementById('role-need').classList.toggle('active', role==='need');
+    document.getElementById('role-host').classList.toggle('active', role==='host');
+  }
+  function submitForm(e){
+    e.preventDefault();
+    document.getElementById('form-step').style.display = 'none';
+    document.getElementById('form-success').classList.add('show');
+  }
+</script>
+
+</body>
+</html>
